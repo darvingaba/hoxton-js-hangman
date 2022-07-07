@@ -1,25 +1,25 @@
 import './style.css'
 
 type State = {
-  word: string;
+  word: string[];
   guesses: string[];
   guessesLeft: number;
 };
 
 let state:State = {
-  word: 'hello',
+  word: ['hello','bye','world', 'javascript', 'typescript'],
   guesses: [],
   guessesLeft: 5,
 }
 
 // showing the lines in the screen
-
+let randomWord = state.word[Math.floor(Math.random() * state.word.length)];
+console.log(randomWord);
 function showLines() {
-  let word = state.word;
   let wordDisplay = '';
-  for (let i = 0; i < word.length; i++) {
-    if (state.guesses.includes(word[i])) {
-      wordDisplay += word[i]+ ' ';
+  for (let i = 0; i < randomWord.length; i++) {
+    if (state.guesses.includes(randomWord[i])) {
+      wordDisplay += randomWord[i]+ ' ';
     } else {
       wordDisplay += '_ ';
     }
@@ -31,19 +31,10 @@ function showLines() {
 
   divEl.innerHTML = wordDisplay;
 
-  if(wordDisplay===word&&state.guessesLeft>0){
-    let h1El = document.createElement("h1");
-    h1El.className = "lost-title";
-    h1El.textContent = "You won";
-
-    let restartButton = document.createElement("button");
-    restartButton.className = "restart-button";
-    restartButton.textContent = "Restart";
-    restartButton.addEventListener('click', () => {
-      location.reload();
-    })
-    divEl.append(h1El, restartButton);
-  }
+  if(wordDisplay===randomWord&&state.guessesLeft>0){
+        youWon();
+    }
+  
 }
 function youWon() {
   let wonTitle = document.createElement('h1');
@@ -70,7 +61,7 @@ function getInput() {
     if (char.length !== 1) return;
     if (state.guesses.includes(char)) return;
     state.guesses.push(char);
-    if (!state.word.includes(char)) {
+    if (!randomWord.includes(char)) {
       state.guessesLeft--;
     }
     render();
@@ -81,7 +72,7 @@ function getInput() {
 // getting mistakes
 
 function getMistakes() {
-  let mistakes = state.guesses.filter((char) => !state.word.includes(char));
+  let mistakes = state.guesses.filter((char) => !randomWord.includes(char));
   let mistakeDisplay = `This are the mistakes : ${mistakes} (${mistakes.length})`;
   // let mistakeDisplay = mistakes.join(' ');
   let divEl = document.querySelector(".result");
@@ -115,7 +106,7 @@ function render() {
 
   showLines();
   getInput();
-  youWon();
+  // youWon();
 }
 
 render();
