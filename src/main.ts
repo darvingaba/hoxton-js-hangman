@@ -24,9 +24,43 @@ function showLines() {
       wordDisplay += '_ ';
     }
   }
+  
+  console.log(typeof(wordDisplay));
   let divEl = document.querySelector('.letters-container');
   if(divEl===null)return;
+
   divEl.innerHTML = wordDisplay;
+
+  if(wordDisplay===word&&state.guessesLeft>0){
+    let h1El = document.createElement("h1");
+    h1El.className = "lost-title";
+    h1El.textContent = "You won";
+
+    let restartButton = document.createElement("button");
+    restartButton.className = "restart-button";
+    restartButton.textContent = "Restart";
+    restartButton.addEventListener('click', () => {
+      location.reload();
+    })
+    divEl.append(h1El, restartButton);
+  }
+}
+function youWon() {
+  let wonTitle = document.createElement('h1');
+  wonTitle.className = 'won-title';
+  wonTitle.textContent = 'You won 👌';
+  let restartButton = document.createElement('button');
+  restartButton.className = 'restart-button';
+  restartButton.textContent = 'Restart';
+  restartButton.addEventListener('click', () => {
+    location.reload();
+  })
+  let container = document.querySelector('.result');
+  if (container === null) return;
+  if(state.guessesLeft>0 && state.word===state.guesses.join('')){
+    // container.innerHTML = "";
+    container.append(wonTitle, restartButton);
+  }
 }
 // getting the input from the user
 function getInput() {
@@ -36,7 +70,11 @@ function getInput() {
     if (char.length !== 1) return;
     if (state.guesses.includes(char)) return;
     state.guesses.push(char);
+    if (!state.word.includes(char)) {
+      state.guessesLeft--;
+    }
     render();
+    console.log(`Guesses left ${state.guessesLeft}`);
   })
 }
 
@@ -44,12 +82,29 @@ function getInput() {
 
 function getMistakes() {
   let mistakes = state.guesses.filter((char) => !state.word.includes(char));
-  let mistakeDisplay = `This are the mistakes : ${mistakes}`;
+  let mistakeDisplay = `This are the mistakes : ${mistakes} (${mistakes.length})`;
   // let mistakeDisplay = mistakes.join(' ');
   let divEl = document.querySelector(".result");
   if (divEl === null) return;
   divEl.textContent = '';
-  divEl.append(mistakeDisplay);
+  if(mistakes.length >=5){
+    let h1El = document.createElement('h1');
+    h1El.className = 'lost-title';
+    h1El.textContent = 'You lost';
+
+    let restartButton = document.createElement('button');
+    restartButton.className = 'restart-button';
+    restartButton.textContent = 'Restart';
+    restartButton.addEventListener('click', () => {
+      location.reload();
+    })
+    divEl.append(h1El,restartButton);
+  }else{
+    let wonTitle = document.createElement('h1');
+    wonTitle.className = 'won-title';
+    // wonTitle.textContent = 'You won 👌';
+    divEl.append(mistakeDisplay);
+  }
 }
 
 function render() {
@@ -60,6 +115,7 @@ function render() {
 
   showLines();
   getInput();
+  youWon();
 }
 
 render();

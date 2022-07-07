@@ -19,3 +19,13 @@ body{
 .letters-container{
     font-size: 2rem;
 }
+.restart-button{
+    margin-top: 1rem;
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background: rgb(225, 218, 218);
+    color: #000;
+    cursor: pointer;
+}
